@@ -61,3 +61,34 @@ class UnconditionalPipeline(Pipeline):
 			shutil.rmtree(structures_dir)
 			shutil.rmtree(scores_dir)
 			shutil.rmtree(results_dir)
+
+	def evaluate_af2(self, output_dir, pdbs_dir, structures_dir, verbose=True):
+		"""
+		Evaluate a set of generated structures. Outputs are stored in the root directory,
+		consisting of
+			- 	A file named 'info.csv', which contains aggregated evaluation statistics 
+				for the set of generated structures.
+			-	A directory named 'designs', where each file is the most similar structure 
+				(predicted by the folding model) to the generated structure and is stored 
+				in a PDB format.
+
+		Args:
+			TODO: add
+		"""
+
+		##################
+		###   Set up   ###
+		##################
+
+		assert os.path.exists(structures_dir), 'Missing af2 structure directory'
+		assert os.path.exists(pdbs_dir), 'Missing pdb directory'
+		assert os.path.exists(output_dir), 'Missing output directory'
+
+		###################
+		###   Process   ###
+		###################
+		scores_dir = self._compute_scores(pdbs_dir, structures_dir, output_dir, verbose)
+		results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
+		self._compute_secondary_diversity(pdbs_dir, designs_dir, results_dir, verbose)
+		self._process_results(results_dir, output_dir)
+

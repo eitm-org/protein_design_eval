@@ -13,6 +13,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
+from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -44,9 +45,7 @@ setup(
     author="Xingyao Chen",
     author_email='xchen@eit.org',
     url='https://github.com/xingyaoc/protein_design_eval',
-    packages=[
-        'protein_design_eval',
-    ],
+    packages=find_packages(include=['protein_design_eval', 'protein_design_eval.*']),
     package_dir={'protein_design_eval':
                  'protein_design_eval'},
     include_package_data=True,
