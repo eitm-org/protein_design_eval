@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from pipeline.standard.base import Pipeline
+from protein_design_eval.pipeline.standard.base import Pipeline
 
 
 class UnconditionalPipeline(Pipeline):

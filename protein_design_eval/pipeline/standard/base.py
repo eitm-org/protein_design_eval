@@ -9,13 +9,13 @@ from torch import nn
 from tqdm import tqdm
 from abc import ABC, abstractmethod
 
-from pipeline.utils.cluster import hcluster
-from pipeline.utils.parse import (
+from protein_design_eval.pipeline.utils.cluster import hcluster
+from protein_design_eval.pipeline.utils.parse import (
 	parse_pdb_file,
 	parse_tm_file,
 	parse_pae_file
 )
-from pipeline.utils.secondary import (
+from protein_design_eval.pipeline.utils.secondary import (
 	assign_secondary_structures,
 	assign_left_handed_helices
 )

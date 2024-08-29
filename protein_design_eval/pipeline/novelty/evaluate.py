@@ -1,6 +1,6 @@
 import argparse
 
-from pipeline.novelty.base import NoveltyPipeline
+from protein_design_eval.pipeline.novelty.base import NoveltyPipeline
 
 
 def main(args):

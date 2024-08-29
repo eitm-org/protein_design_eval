@@ -8,9 +8,9 @@ import pandas as pd
 from tqdm import tqdm
 from collections import OrderedDict
 
-from pipeline.standard.base import Pipeline
-from pipeline.utils.parse import parse_tm_file
-from pipeline.utils.align import compute_rigid_alignment
+from protein_design_eval.pipeline.standard.base import Pipeline
+from protein_design_eval.pipeline.utils.parse import parse_tm_file
+from protein_design_eval.pipeline.utils.align import compute_rigid_alignment
 
 
 class ScaffoldPipeline(Pipeline):

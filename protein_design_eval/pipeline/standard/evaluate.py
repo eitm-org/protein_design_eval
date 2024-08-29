@@ -2,7 +2,7 @@ import os
 import glob
 import argparse
 from tqdm import tqdm
-from pipeline.utils.process import MultiProcessor
+from protein_design_eval.pipeline.utils.process import MultiProcessor
 
 
 def load_inverse_fold_model(name, device):
