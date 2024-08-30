@@ -183,10 +183,11 @@ class Pipeline(ABC):
 		assert not os.path.exists(scores_dir), 'Output scores directory existed'
 		os.mkdir(scores_dir)
 
+		designed_pdb_filepath1 = glob.glob(os.path.join(structures_dir, '*/*.pdb'))[0]
 		# Process	
 		for designed_pdb_filepath in tqdm(
 			glob.glob(os.path.join(structures_dir, '*/*.pdb')),
-			desc=f'Computing scores', disable=not verbose
+			desc=f'Computing scores for {designed_pdb_filepath1}', disable=not verbose
 		):
 
 			# Parse
