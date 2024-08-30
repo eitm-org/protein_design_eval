@@ -185,7 +185,7 @@ class Pipeline(ABC):
 
 		# Process	
 		for designed_pdb_filepath in tqdm(
-			glob.glob(os.path.join(structures_dir, '**/*.pdb')),
+			glob.glob(os.path.join(structures_dir, '*/*.pdb')),
 			desc=f'Computing scores', disable=not verbose
 		):
 
