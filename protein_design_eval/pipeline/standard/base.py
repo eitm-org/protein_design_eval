@@ -328,7 +328,7 @@ class Pipeline(ABC):
 
 		# Process generated pdbs
 		for generated_filepath in tqdm(
-			glob.glob(os.path.join(pdbs_dir, '*.pdb')),
+			glob.glob(os.path.join(pdbs_dir, '*', '*.pdb')),
 			desc='Computing generated secondary diversity', disable=not verbose
 		):
 
