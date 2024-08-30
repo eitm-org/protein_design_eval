@@ -32,8 +32,8 @@ class Pipeline(ABC):
 
 	def __init__(
 		self,
-		inverse_fold_model,
-		fold_model,
+		inverse_fold_model="",
+		fold_model="",
 		tm_score_exec='packages/TMscore/TMscore',
 		tm_align_exec='packages/TMscore/TMalign'
 	):

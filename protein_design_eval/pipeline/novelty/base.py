@@ -6,7 +6,7 @@ import subprocess
 import numpy as np
 import pandas as pd
 
-from pipeline.utils.process import run_parallel
+from protein_design_eval.pipeline.utils.process import run_parallel
 
 
 class NoveltyPipeline():
