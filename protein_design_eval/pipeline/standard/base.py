@@ -351,7 +351,7 @@ class Pipeline(ABC):
 
 		# Process designed pdbs
 		for design_filepath in tqdm(
-			glob.glob(os.path.join(designs_dir, '*.pdb')),
+			glob.glob(os.path.join(designs_dir, '*', '*.pdb')),
 			desc='Computing designed secondary diversity', disable=not verbose
 		):
 
