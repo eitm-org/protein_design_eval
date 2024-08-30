@@ -183,22 +183,21 @@ class Pipeline(ABC):
 		assert not os.path.exists(scores_dir), 'Output scores directory existed'
 		os.mkdir(scores_dir)
 
-		# Process
+		# Process	
 		for designed_pdb_filepath in tqdm(
 			glob.glob(os.path.join(structures_dir, '*.pdb')),
-			desc='Computing scores', disable=not verbose
+			desc=f'Computing scores', disable=not verbose
 		):
 
 			# Parse
 			filename = designed_pdb_filepath.split('/')[-1].split('.')[0]
-			domain_name = '-'.join(filename.split('-')[:-1])
-			seq_name = filename.split('-')[-1]
+			# domain_name = '-'.join(filename.split('-')[:-1])
+			# seq_name = filename.split('-')[-1]
 
 			# Compute score
-			generated_pdb_filepath = os.path.join(pdbs_dir, f"{domain_name}.pdb")
-			output_filepath = os.path.join(scores_dir, f'{domain_name}-{seq_name}.txt')
+			generated_pdb_filepath = os.path.join(pdbs_dir, f"{filename}.pdb")
+			output_filepath = os.path.join(scores_dir, f'{filename}.txt')
 			subprocess.call(f'{self.tm_score_exec} {generated_pdb_filepath} {designed_pdb_filepath} > {output_filepath}', shell=True)
-
 		return scores_dir
 
 	def _aggregate_scores(self, scores_dir, structures_dir, output_dir, verbose):

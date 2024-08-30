@@ -3,7 +3,7 @@ import copy
 import torch
 import numpy as np
 
-from pipeline.models.inverse_folds.base import InverseFoldModel
+from protein_design_eval.pipeline.models.inverse_folds.base import InverseFoldModel
 
 import sys
 sys.path.append('packages')

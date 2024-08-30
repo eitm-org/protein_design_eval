@@ -21,7 +21,7 @@ def load_inverse_fold_model(name, device):
 	"""
 	print('Loading inverse fold model')
 	if name == 'proteinmpnn':
-		from pipeline.models.inverse_folds.proteinmpnn import ProteinMPNN
+		from protein_design_eval.pipeline.models.inverse_folds.proteinmpnn import ProteinMPNN
 		return ProteinMPNN(device=device)
 	else:
 		print('Invalid inverse fold model: {}'.format(name))
