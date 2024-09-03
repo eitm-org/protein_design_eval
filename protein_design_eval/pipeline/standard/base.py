@@ -249,7 +249,7 @@ class Pipeline(ABC):
 		domains = list(domains)
 
 		# Process
-		for domain in tqdm(domains, desc='Aggregating scores', disable=not verbose):
+		for domain in tqdm(domains, desc=f'Aggregating scores for {domains}', disable=not verbose):
 
 			# Find best sample based on scRMSD
 			resample_idxs, scrmsds = [], []
