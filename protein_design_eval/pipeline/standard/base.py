@@ -245,11 +245,11 @@ class Pipeline(ABC):
 		# Get domains
 		domains = set()
 		for filepath in glob.glob(os.path.join(scores_dir, '*.txt')):
-			domains.add('-'.join(filepath.split('/')[-1].split('-')[:-1]))
+			domains.add(filepath.split('/')[-1].split('.')[0])
 		domains = list(domains)
 
 		# Process
-		for domain in tqdm(domains, desc=f'Aggregating scores for {filepath}', disable=not verbose):
+		for domain in tqdm(domains, desc=f'Aggregating scores for {domains}', disable=not verbose):
 
 			# Find best sample based on scRMSD
 			resample_idxs, scrmsds = [], []
