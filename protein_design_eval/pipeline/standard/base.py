@@ -270,7 +270,7 @@ class Pipeline(ABC):
 
 			# Parse pLDDT
 			pdb_filepath = os.path.join(
-				structures_dir, domain,
+				structures_dir, f'{domain}.fa',
 				f'{domain}.pdb'
 			)
 			output = parse_pdb_file(pdb_filepath)
@@ -281,7 +281,7 @@ class Pipeline(ABC):
 				structures_dir,
 				f'{domain}.pae.txt'
 			)
-			pae = parse_pae_file(pae_filepath)['pAE'] if os.path.exists(pae_filepath) else None
+			pae = parse_pae_file(pae_filepath)['pAE'] if os.path.exists(pae_filepath) else -np.inf
 
 			# Save results
 			with open(scores_filepath, 'a') as file:
@@ -328,7 +328,7 @@ class Pipeline(ABC):
 
 		# Process generated pdbs
 		for generated_filepath in tqdm(
-			glob.glob(os.path.join(pdbs_dir, '*', '*.pdb')),
+			glob.glob(os.path.join(pdbs_dir, '*.pdb')),
 			desc='Computing generated secondary diversity', disable=not verbose
 		):
 
