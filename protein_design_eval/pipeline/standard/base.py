@@ -251,27 +251,27 @@ class Pipeline(ABC):
 		# Process
 		for domain in tqdm(domains, desc=f'Aggregating scores for {domains}', disable=not verbose):
 
-			# Find best sample based on scRMSD
-			resample_idxs, scrmsds = [], []
-			for filepath in glob.glob(os.path.join(scores_dir, f'{domain}-resample_*.txt')):
-				resample_idx = int(filepath.split('_')[-1].split('.')[0])
-				resample_results = parse_tm_file(filepath)
-				resample_idxs.append(resample_idx)
-				scrmsds.append(resample_results['rmsd'])
-			best_resample_idx = resample_idxs[np.argmin(scrmsds)]
+			# # Find best sample based on scRMSD
+			# resample_idxs, scrmsds = [], []
+			# for filepath in glob.glob(os.path.join(scores_dir, f'{domain}-resample_*.txt')):
+			# 	resample_idx = int(filepath.split('_')[-1].split('.')[0])
+			# 	resample_results = parse_tm_file(filepath)
+			# 	resample_idxs.append(resample_idx)
+			# 	scrmsds.append(resample_results['rmsd'])
+			# best_resample_idx = resample_idxs[np.argmin(scrmsds)]
 
 			# Parse scores
 			tm_filepath = os.path.join(
 				scores_dir,
-				f'{domain}-resample_{best_resample_idx}.txt'
+				f'{domain}.txt'
 			)
 			output = parse_tm_file(tm_filepath)
 			sctm, scrmsd, seqlen = output['tm'], output['rmsd'], output['seqlen']
 
 			# Parse pLDDT
 			pdb_filepath = os.path.join(
-				structures_dir,
-				f'{domain}-resample_{best_resample_idx}.pdb'
+				structures_dir, f'{domain}.fa',
+				f'{domain}.pdb'
 			)
 			output = parse_pdb_file(pdb_filepath)
 			plddt = np.mean(output['pLDDT'])
@@ -279,9 +279,9 @@ class Pipeline(ABC):
 			# Parse pAE
 			pae_filepath = os.path.join(
 				structures_dir,
-				f'{domain}-resample_{best_resample_idx}.pae.txt'
+				f'{domain}.pae.txt'
 			)
-			pae = parse_pae_file(pae_filepath)['pAE'] if os.path.exists(pae_filepath) else None
+			pae = parse_pae_file(pae_filepath)['pAE'] if os.path.exists(pae_filepath) else -np.inf
 
 			# Save results
 			with open(scores_filepath, 'a') as file:
@@ -328,7 +328,7 @@ class Pipeline(ABC):
 
 		# Process generated pdbs
 		for generated_filepath in tqdm(
-			glob.glob(os.path.join(pdbs_dir, '*', '*.pdb')),
+			glob.glob(os.path.join(pdbs_dir, '*.pdb')),
 			desc='Computing generated secondary diversity', disable=not verbose
 		):
 
