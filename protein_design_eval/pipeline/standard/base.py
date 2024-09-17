@@ -185,18 +185,19 @@ class Pipeline(ABC):
 
 		# Process	
 		for designed_pdb_filepath in tqdm(
-			glob.glob(os.path.join(structures_dir, '*', '*.pdb')),
+			glob.glob(os.path.join(structures_dir, '*', 'ranked_*.pdb')),
 			desc=f'Computing scores', disable=not verbose
 		):
 
 			# Parse
-			filename = designed_pdb_filepath.split('/')[-1].split('.')[0]
+			domain_name = designed_pdb_filepath.split('/')[-2]
+			file_name = designed_pdb_filepath.split('/')[-1].split('.')[0]
 			# domain_name = '-'.join(filename.split('-')[:-1])
 			# seq_name = filename.split('-')[-1]
 
 			# Compute score
-			generated_pdb_filepath = os.path.join(pdbs_dir, f"{filename}.pdb")
-			output_filepath = os.path.join(scores_dir, f'{filename}.txt')
+			generated_pdb_filepath = os.path.join(pdbs_dir, f"{domain_name}.pdb")
+			output_filepath = os.path.join(scores_dir, f'{domain_name}-{file_name}.txt')
 			subprocess.call(f'{self.tm_score_exec} {generated_pdb_filepath} {designed_pdb_filepath} > {output_filepath}', shell=True)
 		return scores_dir
 
@@ -245,33 +246,33 @@ class Pipeline(ABC):
 		# Get domains
 		domains = set()
 		for filepath in glob.glob(os.path.join(scores_dir, '*.txt')):
-			domains.add(filepath.split('/')[-1].split('.')[0])
+			domains.add(filepath.split('/')[-1].split('-')[0])
 		domains = list(domains)
 
 		# Process
-		for domain in tqdm(domains, desc=f'Aggregating scores for {domains}', disable=not verbose):
+		for domain in tqdm(domains, desc=f'Aggregating scores', disable=not verbose):
 
-			# # Find best sample based on scRMSD
-			# resample_idxs, scrmsds = [], []
-			# for filepath in glob.glob(os.path.join(scores_dir, f'{domain}-resample_*.txt')):
-			# 	resample_idx = int(filepath.split('_')[-1].split('.')[0])
-			# 	resample_results = parse_tm_file(filepath)
-			# 	resample_idxs.append(resample_idx)
-			# 	scrmsds.append(resample_results['rmsd'])
-			# best_resample_idx = resample_idxs[np.argmin(scrmsds)]
+			# Find best sample based on scRMSD
+			resample_idxs, scrmsds = [], []
+			for filepath in sorted(glob.glob(os.path.join(scores_dir, f'{domain}-ranked_*.txt'))):
+				resample_idx = int(filepath.split('_')[-1].split('.')[0])
+				resample_results = parse_tm_file(filepath)
+				resample_idxs.append(resample_idx)
+				scrmsds.append(resample_results['rmsd'])
+			best_resample_idx = resample_idxs[np.argmin(scrmsds)]
 
 			# Parse scores
 			tm_filepath = os.path.join(
 				scores_dir,
-				f'{domain}.txt'
+				f'{domain}-ranked_{best_resample_idx}.txt'
 			)
 			output = parse_tm_file(tm_filepath)
 			sctm, scrmsd, seqlen = output['tm'], output['rmsd'], output['seqlen']
 
 			# Parse pLDDT
 			pdb_filepath = os.path.join(
-				structures_dir, f'{domain}.fa',
-				f'{domain}.pdb'
+				structures_dir, f'{domain}',
+				f'ranked_{best_resample_idx}.pdb'
 			)
 			output = parse_pdb_file(pdb_filepath)
 			plddt = np.mean(output['pLDDT'])
@@ -279,7 +280,7 @@ class Pipeline(ABC):
 			# Parse pAE
 			pae_filepath = os.path.join(
 				structures_dir,
-				f'{domain}.pae.txt'
+				f'ranked_{best_resample_idx}.pae.txt'
 			)
 			pae = parse_pae_file(pae_filepath)['pAE'] if os.path.exists(pae_filepath) else -np.inf
 
@@ -351,12 +352,12 @@ class Pipeline(ABC):
 
 		# Process designed pdbs
 		for design_filepath in tqdm(
-			glob.glob(os.path.join(designs_dir, '*', '*.pdb')),
+			glob.glob(os.path.join(designs_dir, '*', 'ranked_0.pdb')),
 			desc='Computing designed secondary diversity', disable=not verbose
 		):
 
 			# Parse filepath
-			domain = design_filepath.split('/')[-1].split('.')[0]
+			domain = design_filepath.split('/')[-2] #.split('.')[0]
 
 			# Parse pdb file
 			output = parse_pdb_file(design_filepath)
