@@ -86,7 +86,7 @@ class NoveltyPipeline():
 		self.tempdirs.append(novelties_dir)
 
 		# Set up reference dataset
-		reference_pdbs = glob.glob(os.path.join(self.datadir, '*.cif'))
+		reference_pdbs = glob.glob(os.path.join(self.datadir, '*.cif')) + glob.glob(os.path.join(self.datadir, '*.pdb'))
 		design_pdbs = glob.glob(os.path.join(designs_dir, '*.pdb'))
 		print(f'Number of designs:    {len(design_pdbs)}')
 		print(f'Number of references: {len(reference_pdbs)}')
