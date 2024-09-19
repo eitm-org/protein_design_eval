@@ -118,7 +118,7 @@ class DiversityPipeline():
 		#################
 
 		# Create output directory
-		scores_dir = os.path.join(output_dir, 'scores')
+		scores_dir = os.path.join(output_dir, 'diversity_scores')
 		assert not os.path.exists(scores_dir), 'Output scores directory existed'
 		os.mkdir(scores_dir)
 		self.tempdirs.append(scores_dir)
