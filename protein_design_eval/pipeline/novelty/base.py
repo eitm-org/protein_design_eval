@@ -86,7 +86,7 @@ class NoveltyPipeline():
 		self.tempdirs.append(novelties_dir)
 
 		# Set up reference dataset
-		reference_pdbs = self._get_reference_pdbs(rootdir, num_processes)
+		reference_pdbs = glob.glob(os.path.join(self.datadir, '*.cif')) + glob.glob(os.path.join(self.datadir, '*.pdb'))
 		design_pdbs = glob.glob(os.path.join(designs_dir, '*.pdb'))
 		print(f'Number of designs:    {len(design_pdbs)}')
 		print(f'Number of references: {len(reference_pdbs)}')
@@ -173,34 +173,34 @@ class NoveltyPipeline():
 	def _get_reference_pdbs(self, rootdir, num_processes):
 		"""
 		Set up reference datasets for evaluation.
-		"""
+		"""	
 
 		def process(i, tasks, params):
 			for filepath in tasks:
 				name = filepath.split('/')[-1].split('.')[0]
-				output_filepath = os.path.join(params['output_dir'], f'{name}.pdb')
+				output_filepath = os.path.join(params['output_dir'], f'{name}.cif')
 				with gzip.open(filepath, 'rb') as f_in:
 					with open(output_filepath, 'wb') as f_out:
 						shutil.copyfileobj(f_in, f_out)
 
 		# Set up temporary directory
 		references_dir = os.path.join(rootdir, 'references')
-		assert not os.path.exists(references_dir), 'Output references directory existed'
-		os.mkdir(references_dir)
-		self.tempdirs.append(references_dir)
-
-		# Process references
-		input_filepaths = glob.glob(os.path.join(self.datadir, '*.pdb.gz'))
-		run_parallel(
-			num_processes=num_processes,
-			fn=process,
-			tasks=input_filepaths,
-			params={
-				'output_dir': references_dir
-			}
-		)
-
-		return glob.glob(os.path.join(references_dir, '*.pdb'))
+		input_filepaths = glob.glob(os.path.join(rootdir, '*', '*.cif.gz'))
+		if len(glob.glob(os.path.join(references_dir, '*.cif'))) >= len(input_filepaths):
+			print('moo')
+			return glob.glob(os.path.join(references_dir, '*.cif'))
+		else:
+			os.mkdir(references_dir)
+			# Process references
+			run_parallel(
+				num_processes=num_processes,
+				fn=process,
+				tasks=input_filepaths,
+				params={
+					'output_dir': references_dir
+				}
+			)
+			return glob.glob(os.path.join(references_dir, '*.cif'))
 
 	def _aggregate(self, novelties_dir, output_dir):
 		"""
