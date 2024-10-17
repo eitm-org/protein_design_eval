@@ -21,6 +21,58 @@ class ScaffoldPipeline(Pipeline):
 		-	assessment on secondary structure diversity
 		-	assessment on motif constraint satisfaction.
 	"""
+	def evaluate_af2(self, output_dir, generation_dir, structures_dir, clean=True, verbose=True):
+		"""
+		Evaluate a set of generated structures. Outputs are stored in the root directory,
+		consisting of
+			- 	A file named 'info.csv', which contains aggregated evaluation statistics 
+				for the set of generated structures.
+			-	A directory named 'designs', where each file is the most similar structure 
+				(predicted by the folding model) to the generated structure and is stored 
+				in a PDB format.
+
+		Args:
+			rootdir:
+				Root directory containing
+					-	a subdirectory named 'pdbs', where each file contains a
+						generated structure in the PDB format
+					-	a subdirectory named 'motif_pdbs', where each corresponding
+						file (same filename as the filename in the 'pdbs' subdirectory)
+						contains the motif structure, aligned in residue indices with 
+						the generated structure and stored in the PDB format.
+			clean:
+				Whether to remove intermediate files and directories. Default to True.
+			verbose:
+				Whether to print detailed progress information. Default to True.
+		"""
+
+		##################
+		###   Set up   ###
+		##################
+
+		assert os.path.exists(generation_dir), 'Missing root directory'
+		pdbs_dir = os.path.join(generation_dir, 'pdbs')
+		motif_pdbs_dir = os.path.join(generation_dir, 'motif_pdbs')
+		# output_dir = rootdir
+
+		###################
+		###   Process   ###
+		###################
+		scores_dir = self._compute_scores(pdbs_dir, structures_dir, output_dir, verbose)
+		results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
+		self._compute_secondary_diversity(pdbs_dir, designs_dir, results_dir, verbose)
+		self._compute_motif_scores(motif_pdbs_dir, designs_dir, results_dir, verbose)
+		self._process_results(results_dir, output_dir)
+
+		####################
+		###   Clean up   ###
+		####################
+
+		# if clean:
+		# 	shutil.rmtree(processed_pdb_dir)
+		# 	shutil.rmtree(structures_dir)
+		# 	shutil.rmtree(scores_dir)
+		# 	shutil.rmtree(results_dir)
 
 	def evaluate(self, rootdir, clean=True, verbose=True):
 		"""
@@ -176,6 +228,7 @@ class ScaffoldPipeline(Pipeline):
 		os.mkdir(sequences_dir)
 
 		# Process
+		print(glob.glob(os.path.join(processed_pdbs_dir, '*.pdb')))
 		for processed_pdb_filepath in tqdm(
 			glob.glob(os.path.join(processed_pdbs_dir, '*.pdb')),
 			desc='Inverse folding', disable=not verbose
@@ -198,7 +251,7 @@ class ScaffoldPipeline(Pipeline):
 			with open(sequences_filepath, 'w') as file:
 				file.write(
 					self.inverse_fold_model.predict(
-						processed_pdb_filepath,
+						pdb_filepath=processed_pdb_filepath,
 						fixed_positions_dict=fixed_positions_dict
 					)
 				)
