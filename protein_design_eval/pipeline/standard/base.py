@@ -352,12 +352,12 @@ class Pipeline(ABC):
 
 		# Process designed pdbs
 		for design_filepath in tqdm(
-			glob.glob(os.path.join(designs_dir, '*', 'ranked_0.pdb')),
+			glob.glob(os.path.join(designs_dir, '*.pdb')),
 			desc='Computing designed secondary diversity', disable=not verbose
 		):
 
 			# Parse filepath
-			domain = design_filepath.split('/')[-2] #.split('.')[0]
+			domain = design_filepath.split('/')[-1].split('.')[0]
 
 			# Parse pdb file
 			output = parse_pdb_file(design_filepath)
