@@ -62,7 +62,7 @@ class UnconditionalPipeline(Pipeline):
 			shutil.rmtree(scores_dir)
 			shutil.rmtree(results_dir)
 
-	def evaluate_af2(self, output_dir, pdbs_dir, structures_dir, verbose=True):
+	def evaluate_af2(self, output_dir, generation_dir, structures_dir, verbose=True):
 		"""
 		Evaluate a set of generated structures. Outputs are stored in the root directory,
 		consisting of
@@ -81,13 +81,13 @@ class UnconditionalPipeline(Pipeline):
 		##################
 
 		assert os.path.exists(structures_dir), 'Missing af2 structure directory'
-		assert os.path.exists(pdbs_dir), 'Missing pdb directory'
+		assert os.path.exists(generation_dir), 'Missing pdb directory'
 		assert os.path.exists(output_dir), 'Missing output directory'
 
 		###################
 		###   Process   ###
 		###################
-		scores_dir = self._compute_scores(pdbs_dir, structures_dir, output_dir, verbose)
+		scores_dir = self._compute_scores(generation_dir, structures_dir, output_dir, verbose)
 		results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
 		self._compute_secondary_diversity(designs_dir, structures_dir, results_dir, verbose)
 		self._process_results(results_dir, output_dir)
