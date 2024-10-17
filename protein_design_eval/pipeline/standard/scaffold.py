@@ -228,7 +228,6 @@ class ScaffoldPipeline(Pipeline):
 		os.mkdir(sequences_dir)
 
 		# Process
-		print(glob.glob(os.path.join(processed_pdbs_dir, '*.pdb')))
 		for processed_pdb_filepath in tqdm(
 			glob.glob(os.path.join(processed_pdbs_dir, '*.pdb')),
 			desc='Inverse folding', disable=not verbose
