@@ -58,9 +58,9 @@ class ScaffoldPipeline(Pipeline):
 		###################
 		###   Process   ###
 		###################
-		scores_dir = self._compute_scores(pdbs_dir, structures_dir, output_dir, verbose)
+		scores_dir = self._compute_scores(generation_dir, structures_dir, output_dir, verbose)
 		results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
-		self._compute_secondary_diversity(pdbs_dir, designs_dir, results_dir, verbose)
+		self._compute_secondary_diversity(generation_dir, designs_dir, results_dir, verbose)
 		self._compute_motif_scores(motif_pdbs_dir, designs_dir, results_dir, verbose)
 		self._process_results(results_dir, output_dir)
 
