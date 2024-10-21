@@ -51,9 +51,7 @@ class ScaffoldPipeline(Pipeline):
 		##################
 
 		assert os.path.exists(generation_dir), 'Missing root directory'
-		pdbs_dir = os.path.join(generation_dir, 'pdbs')
 		motif_pdbs_dir = os.path.join(generation_dir, 'motif_pdbs')
-		# output_dir = rootdir
 
 		###################
 		###   Process   ###
