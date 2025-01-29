@@ -89,6 +89,6 @@ class UnconditionalPipeline(Pipeline):
 		###################
 		scores_dir = self._compute_scores(generation_dir, structures_dir, output_dir, verbose)
 		results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
-		self._compute_secondary_diversity(designs_dir, structures_dir, results_dir, verbose)
+		self._compute_secondary_diversity(generation_dir, designs_dir, results_dir, verbose)
 		self._process_results(results_dir, output_dir)
 

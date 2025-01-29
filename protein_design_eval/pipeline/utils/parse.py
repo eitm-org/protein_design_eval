@@ -76,7 +76,7 @@ def parse_pdb_file(filepath):
     ignore_plddt = False
     with open(filepath, 'r') as file:
         for line in file:
-            if line[:4] == 'ATOM' and line[13:15].strip() in ['N', 'CA', 'C', 'O']:
+            if line[:4] == 'ATOM' and line[13:15].strip() in ['N', 'CA', 'C', 'O'] and line[21] == 'A':
                 bb_coords.append([float(line[30:38]), float(line[38:46]), float(line[46:54])])
                 if line[13:15].strip() == 'CA':
                     try:
