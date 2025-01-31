@@ -1,5 +1,7 @@
 import os
 import glob
+import re
+
 import torch
 import shutil
 import subprocess
@@ -372,6 +374,28 @@ class Pipeline(ABC):
 				file.write('{},{:.3f},{:.3f},{:.3f},{:.3f}\n'.format(
 					domain, pct_ss[0], pct_ss[1], pct_ss[0] + pct_ss[1], pct_left_helix
 				))
+
+	def parse_afig_metrics(self, ig_metrics_path):
+		with open(ig_metrics_path, 'r') as file:
+			metrics = {}
+			for i, line in enumerate(file):
+				line = line.strip()
+				if i==0: 
+					columns = re.split(r'\s+',line)[1:]
+				else:
+					data = re.split(r'\s+',line)[1:]
+					design = data[-1].rsplit('_', 3)[0]
+					metrics[design] = data[:-1]
+		parsed_metrics = pd.DataFrame(metrics, index=columns[:-1]).T
+		parsed_metrics.reset_index(inplace=True)
+		return parsed_metrics.rename(columns={'index':'domain'})
+
+	def _process_afig_metrics(self, structures_dir, results_dir):
+		ig_metrics_path = os.path.join(structures_dir, 'initial_guess', 'out.sc')
+		parsed_metrics = self.parse_afig_metrics(ig_metrics_path)
+		metrics_output_path = os.path.join(results_dir, 'single_scores.csv')
+		parsed_metrics.to_csv(metrics_output_path, index=False)
+
 
 	def _process_results(self, results_dir, output_dir):
 		"""
