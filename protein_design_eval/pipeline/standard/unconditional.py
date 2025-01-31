@@ -92,3 +92,36 @@ class UnconditionalPipeline(Pipeline):
 		self._compute_secondary_diversity(generation_dir, designs_dir, results_dir, verbose)
 		self._process_results(results_dir, output_dir)
 
+
+
+	def evaluate_afig(self, output_dir, generation_dir, structures_dir, designs_dir, verbose=True):
+		"""
+		Evaluate a set of generated structures. Outputs are stored in the root directory,
+		consisting of
+			- 	A file named 'info.csv', which contains aggregated evaluation statistics 
+				for the set of generated structures.
+			-	A directory named 'designs', where each file is the most similar structure 
+				(predicted by the folding model) to the generated structure and is stored 
+				in a PDB format.
+
+		Args:
+			TODO: add
+		"""
+
+		##################
+		###   Set up   ###
+		##################
+
+		assert os.path.exists(generation_dir), 'Missing pdb directory'
+		assert os.path.exists(designs_dir), 'Missing designs directory'
+
+		###################
+		###   Process   ###
+		###################
+		# scores_dir = self._compute_scores(generation_dir, structures_dir, output_dir, verbose)
+		# results_dir, designs_dir = self._aggregate_scores(scores_dir, structures_dir, output_dir, verbose)
+		results_dir = os.path.join(output_dir, 'results')
+		os.mkdir(results_dir)
+		self._compute_secondary_diversity(generation_dir, designs_dir, results_dir, verbose)
+		self._process_afig_metrics(structures_dir, results_dir)
+		self._process_results(results_dir, output_dir)
