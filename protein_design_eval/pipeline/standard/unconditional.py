@@ -78,8 +78,7 @@ class UnconditionalPipeline(Pipeline):
 
 		##################
 		###   Set up   ###
-		##################
-
+		##################		
 		assert os.path.exists(structures_dir), 'Missing af2 structure directory'
 		assert os.path.exists(generation_dir), 'Missing pdb directory'
 		assert os.path.exists(output_dir), 'Missing output directory'

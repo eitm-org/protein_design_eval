@@ -183,11 +183,11 @@ class Pipeline(ABC):
 		# Create output directory
 		scores_dir = os.path.join(output_dir, 'scores')
 		assert not os.path.exists(scores_dir), 'Output scores directory existed'
-		os.mkdir(scores_dir)
+		os.mkdir(scores_dir) 
 
 		# Process	
 		for designed_pdb_filepath in tqdm(
-			glob.glob(os.path.join(structures_dir, '*', 'ranked_*.pdb')),
+			glob.glob(os.path.join(structures_dir, '*.pdb')),
 			desc=f'Computing scores', disable=not verbose
 		):
 
@@ -200,6 +200,7 @@ class Pipeline(ABC):
 			# Compute score
 			generated_pdb_filepath = os.path.join(pdbs_dir, f"{domain_name}.pdb")
 			output_filepath = os.path.join(scores_dir, f'{domain_name}-{file_name}.txt')
+			print(f'running {self.tm_score_exec} {generated_pdb_filepath} {designed_pdb_filepath} > {output_filepath}')
 			subprocess.call(f'{self.tm_score_exec} {generated_pdb_filepath} {designed_pdb_filepath} > {output_filepath}', shell=True)
 		return scores_dir
 
