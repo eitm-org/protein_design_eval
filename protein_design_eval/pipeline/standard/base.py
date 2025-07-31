@@ -249,7 +249,7 @@ class Pipeline(ABC):
 		domains = set()
 		for filepath in glob.glob(os.path.join(scores_dir, '*.txt')):
 			# all design names in scores_dir have "-ranked_X.txt" appended to them where X is a number
-			domain = re.sub("-ranked_[0-9]+.txt", "", os.path.basename(filepath))
+			domain = re.sub("-ranked_[0-9]+.txt$", "", os.path.basename(filepath))
 			domains.add(domain)
 		domains = list(domains)
 
