@@ -248,12 +248,13 @@ class Pipeline(ABC):
 		# Get domains
 		domains = set()
 		for filepath in glob.glob(os.path.join(scores_dir, '*.txt')):
-			domains.add(filepath.split('/')[-1].split('-')[0])
+			# all design names in scores_dir have "-ranked_X.txt" appended to them where X is a number
+			domain = re.sub("-ranked_[0-9]+.txt", "", os.path.basename(filepath))
+			domains.add(domain)
 		domains = list(domains)
 
 		# Process
 		for domain in tqdm(domains, desc=f'Aggregating scores', disable=not verbose):
-
 			# Find best sample based on scRMSD
 			resample_idxs, scrmsds = [], []
 			for filepath in sorted(glob.glob(os.path.join(scores_dir, f'{domain}-ranked_*.txt'))):
@@ -336,7 +337,7 @@ class Pipeline(ABC):
 		):
 
 			# Parse filepath
-			domain = generated_filepath.split('/')[-1].split('.')[0]
+			domain = re.sub(".pdb$", "", os.path.basename(generated_filepath))
 
 			# Parse pdb file
 			output = parse_pdb_file(generated_filepath)
@@ -359,7 +360,7 @@ class Pipeline(ABC):
 		):
 
 			# Parse filepath
-			domain = design_filepath.split('/')[-1].split('.')[0]
+			domain = os.path.basename(design_filepath).replace(".pdb", "")
 
 			# Parse pdb file
 			output = parse_pdb_file(design_filepath)
